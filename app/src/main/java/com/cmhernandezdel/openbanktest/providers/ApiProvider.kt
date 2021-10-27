@@ -4,10 +4,8 @@ import android.util.Log
 import com.cmhernandezdel.openbanktest.models.MarvelAPIResponse
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.core.HttpException
-import com.github.kittinunf.fuel.core.ResponseDeserializable
 import com.github.kittinunf.fuel.coroutines.*
 import com.github.kittinunf.fuel.gson.gsonDeserializer
-import com.github.kittinunf.fuel.gson.responseObject
 import java.math.BigInteger
 import java.security.MessageDigest
 import javax.inject.Inject
@@ -19,7 +17,7 @@ class ApiProvider @Inject constructor() {
     private val privateKey = "0a59868db844e5e923d31ba3dbab8161ceed1402"
     private val classTag = "ApiProvider.kt"
 
-    suspend fun getCharacters(): MarvelAPIResponse {
+    suspend fun getCharacters(): MarvelAPIResponse? {
         val timeStamp = System.currentTimeMillis()
         val hash = md5("$timeStamp$privateKey$publicKey")
 
@@ -32,6 +30,7 @@ class ApiProvider @Inject constructor() {
                 is HttpException -> Log.w(classTag, "Error while executing HTTP request: ${exception.message}")
                 else -> Log.w(classTag, "Error while deserializing: ${exception.message}")
             }
+            return null
         }
     }
 
