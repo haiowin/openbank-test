@@ -21,5 +21,7 @@ class ListFragment : Fragment(R.layout.list_fragment) {
             viewModel = mViewModel
             lifecycleOwner = viewLifecycleOwner
         }
+
+        mViewModel.getCharacters()
     }
 }
