@@ -20,5 +20,13 @@ class ListViewModel @Inject constructor(private val apiProvider: ApiProvider) : 
 
     fun getCharacters() = viewModelScope.launch {
         val response = apiProvider.getCharacters()
+        response?.let {
+            val characterList = ArrayList<ListItemViewModel>()
+            for (character in it.data.results) {
+                val viewModel = ListItemViewModel(character.name)
+                characterList.add(viewModel)
+            }
+            _characters.postValue(characterList)
+        }
     }
 }
