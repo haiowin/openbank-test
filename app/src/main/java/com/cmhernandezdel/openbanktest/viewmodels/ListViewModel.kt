@@ -15,10 +15,10 @@ class ListViewModel @Inject constructor(private val apiProvider: ApiProvider) : 
     val characters: LiveData<List<ListItemViewModel>> by this::_characters
 
     init {
-        getCharacters()
+        retrieveCharacters()
     }
 
-    fun getCharacters() = viewModelScope.launch {
+    private fun retrieveCharacters() = viewModelScope.launch {
         val response = apiProvider.getCharacters()
         response?.let {
             val characterList = ArrayList<ListItemViewModel>()
@@ -26,6 +26,7 @@ class ListViewModel @Inject constructor(private val apiProvider: ApiProvider) : 
                 val viewModel = ListItemViewModel(character.name)
                 characterList.add(viewModel)
             }
+            println("Post list of ${characterList.size} characters")
             _characters.postValue(characterList)
         }
     }

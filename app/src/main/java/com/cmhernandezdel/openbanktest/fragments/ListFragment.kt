@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.cmhernandezdel.openbanktest.R
 import com.cmhernandezdel.openbanktest.databinding.ListFragmentBinding
 import com.cmhernandezdel.openbanktest.viewmodels.ListViewModel
@@ -20,8 +21,11 @@ class ListFragment : Fragment(R.layout.list_fragment) {
         binding.apply {
             viewModel = mViewModel
             lifecycleOwner = viewLifecycleOwner
-        }
 
-        mViewModel.getCharacters()
+            listViewCharacters.apply {
+                layoutManager = LinearLayoutManager(requireContext())
+                setHasFixedSize(true)
+            }
+        }
     }
 }

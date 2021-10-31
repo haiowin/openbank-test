@@ -17,6 +17,7 @@ object ListItemViewModelToRecyclerViewDataBindingAdapter {
         return if (recyclerView.adapter != null && recyclerView.adapter is BindableRecyclerViewAdapter) {
             recyclerView.adapter as BindableRecyclerViewAdapter
         } else {
+            println("Create adapter")
             val bindableRecyclerViewAdapter = BindableRecyclerViewAdapter()
             recyclerView.adapter = bindableRecyclerViewAdapter
             bindableRecyclerViewAdapter
