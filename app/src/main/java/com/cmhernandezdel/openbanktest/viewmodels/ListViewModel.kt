@@ -13,16 +13,16 @@ import javax.inject.Inject
 @HiltViewModel
 class ListViewModel @Inject constructor(private val apiProvider: ApiProvider) : ViewModel() {
     private val _characters = MutableLiveData<List<ListItemViewModel>>()
-    private val _selectedCharacter = MutableLiveData<ListItemViewModel>()
+    private val _selectedCharacter = MutableLiveData<MarvelAPIResult>()
     val characters: LiveData<List<ListItemViewModel>> by this::_characters
-    val selectedCharacter: LiveData<ListItemViewModel> by this::_selectedCharacter
+    val selectedCharacter: LiveData<MarvelAPIResult> by this::_selectedCharacter
 
     init {
         retrieveCharacters()
     }
 
     private fun onItemClicked(character: MarvelAPIResult) {
-
+        _selectedCharacter.postValue(character)
     }
 
     private fun retrieveCharacters() = viewModelScope.launch {
