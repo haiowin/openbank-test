@@ -7,9 +7,10 @@ import androidx.lifecycle.viewModelScope
 import com.cmhernandezdel.openbanktest.models.MarvelAPIResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
-class SharedViewModel : ViewModel() {
+class SharedViewModel @Inject constructor() : ViewModel() {
     private val _currentCharacter = MutableLiveData<MarvelAPIResult?>()
     val currentCharacter: LiveData<MarvelAPIResult?> by this::_currentCharacter
 
