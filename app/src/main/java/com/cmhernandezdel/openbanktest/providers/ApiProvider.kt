@@ -17,21 +17,17 @@ class ApiProvider @Inject constructor() {
     private val privateKey = "0a59868db844e5e923d31ba3dbab8161ceed1402"
     private val classTag = "ApiProvider.kt"
 
-    suspend fun getCharacters(): MarvelAPIResponse? {
+    suspend fun getCharacters(offset: Int = 0): MarvelAPIResponse? {
         val timeStamp = System.currentTimeMillis()
         val hash = md5("$timeStamp$privateKey$publicKey")
+        val url = "https://gateway.marvel.com:443/v1/public/characters?offset=$offset&apikey=$publicKey&ts=$timeStamp&hash=$hash"
 
         try {
-            val apiResponse =
-                Fuel.get("https://gateway.marvel.com:443/v1/public/characters?apikey=$publicKey&ts=$timeStamp&hash=$hash")
-                    .awaitObject<MarvelAPIResponse>(gsonDeserializer())
+            val apiResponse = Fuel.get(url).awaitObject<MarvelAPIResponse>(gsonDeserializer())
             return apiResponse
         } catch (exception: Exception) {
             when (exception) {
-                is HttpException -> Log.w(
-                    classTag,
-                    "Error while executing HTTP request: ${exception.message}"
-                )
+                is HttpException -> Log.w(classTag, "Error while executing HTTP request: ${exception.message}")
                 else -> Log.w(classTag, "Error while deserializing: ${exception.message}")
             }
             return null

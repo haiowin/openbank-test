@@ -12,9 +12,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SharedViewModel @Inject constructor(val apiProvider: ApiProvider) : ViewModel() {
-    private val _characters = MutableLiveData<List<ListItemViewModel>>()
+    private val _characters = MutableLiveData<ArrayList<ListItemViewModel>>()
     private val _selectedCharacter = MutableLiveData<MarvelAPIResult?>()
-    val characters: LiveData<List<ListItemViewModel>> by this::_characters
+    val characters: LiveData<ArrayList<ListItemViewModel>> by this::_characters
     val selectedCharacter: LiveData<MarvelAPIResult?> by this::_selectedCharacter
 
     init {
@@ -25,20 +25,16 @@ class SharedViewModel @Inject constructor(val apiProvider: ApiProvider) : ViewMo
         _selectedCharacter.postValue(character)
     }
 
-    private fun retrieveCharacters() = viewModelScope.launch {
-        val response = apiProvider.getCharacters()
+    fun retrieveCharacters() = viewModelScope.launch {
+        val response = apiProvider.getCharacters(_characters.value?.size ?: 0)
         response?.let {
-            val characterList = ArrayList<ListItemViewModel>()
+            val characterList = _characters.value ?: ArrayList()
             for (character in it.data.results) {
                 val viewModel = ListItemViewModel(character, ::onItemClicked)
                 characterList.add(viewModel)
             }
             _characters.postValue(characterList)
         }
-    }
-
-    fun setCurrentCharacter(character: MarvelAPIResult) = viewModelScope.launch {
-        _selectedCharacter.postValue(character)
     }
 
     fun unsetCurrentCharacter() = viewModelScope.launch {
