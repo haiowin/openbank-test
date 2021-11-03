@@ -6,7 +6,7 @@
 
         <variable
             name="viewModel"
-            type="com.cmhernandezdel.openbanktest.viewmodels.ListViewModel" />
+            type="com.cmhernandezdel.openbanktest.viewmodels.SharedViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

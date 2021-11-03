@@ -5,20 +5,43 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cmhernandezdel.openbanktest.models.MarvelAPIResult
+import com.cmhernandezdel.openbanktest.providers.ApiProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SharedViewModel @Inject constructor() : ViewModel() {
-    private val _currentCharacter = MutableLiveData<MarvelAPIResult?>()
-    val currentCharacter: LiveData<MarvelAPIResult?> by this::_currentCharacter
+class SharedViewModel @Inject constructor(val apiProvider: ApiProvider) : ViewModel() {
+    private val _characters = MutableLiveData<List<ListItemViewModel>>()
+    private val _selectedCharacter = MutableLiveData<MarvelAPIResult?>()
+    val characters: LiveData<List<ListItemViewModel>> by this::_characters
+    val selectedCharacter: LiveData<MarvelAPIResult?> by this::_selectedCharacter
+
+    init {
+        retrieveCharacters()
+    }
+
+    private fun onItemClicked(character: MarvelAPIResult) {
+        _selectedCharacter.postValue(character)
+    }
+
+    private fun retrieveCharacters() = viewModelScope.launch {
+        val response = apiProvider.getCharacters()
+        response?.let {
+            val characterList = ArrayList<ListItemViewModel>()
+            for (character in it.data.results) {
+                val viewModel = ListItemViewModel(character, ::onItemClicked)
+                characterList.add(viewModel)
+            }
+            _characters.postValue(characterList)
+        }
+    }
 
     fun setCurrentCharacter(character: MarvelAPIResult) = viewModelScope.launch {
-        _currentCharacter.postValue(character)
+        _selectedCharacter.postValue(character)
     }
 
     fun unsetCurrentCharacter() = viewModelScope.launch {
-        _currentCharacter.postValue(null)
+        _selectedCharacter.postValue(null)
     }
 }
